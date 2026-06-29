@@ -1,100 +1,66 @@
-function showPage(id, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  btn.classList.add('active');
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-function generateScore() {
-  const dest = document.getElementById('destination').value.trim();
-  if (!dest) { alert('Please enter a destination first.'); return; }
-  const score = Math.floor(Math.random() * 40) + 60;
-  const circle = document.getElementById('scoreCircle');
-  const status = document.getElementById('status');
-  const advice = document.getElementById('advice');
-  circle.textContent = score + '%';
-  circle.className = 'circle';
-  status.className = 'status';
-  if (score >= 80) {
-    circle.classList.add('safe'); status.classList.add('safe');
-    status.textContent = 'Safe';
-    advice.textContent = dest + ' looks safe. Main roads preferred.';
-  } else if (score >= 60) {
-    circle.classList.add('warn'); status.classList.add('warn');
-    status.textContent = 'Moderate';
-    advice.textContent = dest + ' has moderate risk. Share your location.';
-  } else {
-    circle.classList.add('danger'); status.classList.add('danger');
-    status.textContent = 'Risky';
-    advice.textContent = dest + ' is high-risk. Travel with someone.';
-  }
-  showPage('score', document.querySelectorAll('.nav-btn')[1]);
+:root{
+  --bg1:#050816; --bg2:#0f172a; --stroke:rgba(255,255,255,.14); --text:#f8fafc;
+  --muted:rgba(248,250,252,.72); --good:#4ade80; --warn:#fbbf24; --danger:#f87171;
 }
-
-const contacts = [];
-function addContact() {
-  const name = document.getElementById('contactName').value.trim();
-  const info = document.getElementById('contactInfo').value.trim();
-  if (!name || !info) { alert('Enter both name and contact info.'); return; }
-  contacts.push({ name, info });
-  document.getElementById('contactName').value = '';
-  document.getElementById('contactInfo').value = '';
-  renderContacts();
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif}
+body{
+  min-height:100vh;color:var(--text);
+  background:radial-gradient(circle at top left, rgba(34,211,238,.18), transparent 28%),
+             radial-gradient(circle at top right, rgba(139,92,246,.20), transparent 26%),
+             linear-gradient(135deg,var(--bg1),var(--bg2));
+  padding:18px; overflow-x:hidden;
 }
-function renderContacts() {
-  const list = document.getElementById('contactList');
-  list.innerHTML = contacts.map((c, i) =>
-    '<li>👤 <strong>' + c.name + '</strong> — ' + c.info +
-    ' <button onclick="removeContact(' + i + ')" style="margin-left:8px;padding:2px 8px;border-radius:8px;background:rgba(248,113,113,.25);color:#f87171;border:none;cursor:pointer;font-size:12px">Remove</button></li>'
-  ).join('');
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+                   linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size:34px 34px;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,.55), transparent 90%);
 }
-function removeContact(i) {
-  contacts.splice(i, 1);
-  renderContacts();
+.bg-glow{position:fixed;width:260px;height:260px;border-radius:50%;filter:blur(60px);opacity:.28;pointer-events:none}
+.glow1{background:#22d3ee;top:-40px;left:-40px}.glow2{background:#8b5cf6;bottom:-50px;right:-40px}
+.app{max-width:560px;margin:auto;position:relative;z-index:1}
+.glass{
+  background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+  border:1px solid var(--stroke); border-radius:24px; box-shadow:0 18px 45px rgba(0,0,0,.28);
+  backdrop-filter:blur(18px) saturate(140%); -webkit-backdrop-filter:blur(18px) saturate(140%);
 }
-
-function shareLocation() {
-  const text = document.getElementById('locationText');
-  const link = document.getElementById('mapLink');
-  if (!navigator.geolocation) { text.textContent = 'Geolocation not supported.'; return; }
-  text.textContent = 'Fetching location...';
-  navigator.geolocation.getCurrentPosition(
-    function(pos) {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
-      const url = 'https://www.google.com/maps?q=' + lat + ',' + lng;
-      text.textContent = '📍 ' + lat.toFixed(5) + ', ' + lng.toFixed(5);
-      link.innerHTML = '<a href="' + url + '" target="_blank">' + url + '</a>';
-    },
-    function() { text.textContent = 'Permission denied.'; }
-  );
-}
-
-let sosTimer = null;
-function startSOS() {
-  const countdown = document.getElementById('countdownText');
-  const result = document.getElementById('sosResult');
-  let seconds = 5;
-  if (sosTimer) clearInterval(sosTimer);
-  countdown.textContent = 'SOS sending in ' + seconds + '...';
-  sosTimer = setInterval(function() {
-    seconds--;
-    if (seconds > 0) {
-      countdown.textContent = 'SOS sending in ' + seconds + '...';
-    } else {
-      clearInterval(sosTimer);
-      countdown.textContent = '🚨 SOS Sent!';
-      result.innerHTML = '<h3>Status</h3><p style="color:var(--good);font-weight:700">✅ Emergency alert sent!</p>';
-    }
-  }, 1000);
-}
-
-function fakeCall() {
-  const names = ['Mom', 'Riya', 'Arjun', 'Priya', 'Rahul'];
-  const caller = names[Math.floor(Math.random() * names.length)];
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:linear-gradient(180deg,#0f172a,#050816);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#f8fafc;font-family:Inter,sans-serif;text-align:center;gap:16px;';
-  overlay.innerHTML = '<div style="font-size:56px">📱</div><p style="font-size:13px;color:rgba(248,250,252,.6)">INCOMING CALL</p><h2 style="font-size:32px;font-weight:800">' + caller + '</h2><p style="color:rgba(248,250,252,.5)">Mobile</p><div style="display:flex;gap:40px;margin-top:24px"><button onclick="this.closest(\'div\').remove()" style="width:64px;height:64px;border-radius:50%;background:#ef4444;border:none;font-size:28px;cursor:pointer">📵</button><button onclick="this.closest(\'div\').remove()" style="width:64px;height:64px;border-radius:50%;background:#4ade80;border:none;font-size:28px;cursor:pointer">📞</button></div>';
-  document.body.appendChild(overlay);
-  setTimeout(function() { overlay.remove(); }, 20000);
-}
+.header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:18px;margin-bottom:14px}
+.header h1{font-size:30px;line-height:1.05;letter-spacing:-.03em}
+.header p{margin-top:6px;color:var(--muted);font-size:14px}
+.badge{padding:9px 12px;border-radius:999px;background:linear-gradient(135deg, rgba(34,211,238,.18), rgba(139,92,246,.18));border:1px solid rgba(255,255,255,.14);color:#dbeafe;font-size:12px}
+.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;padding:10px}
+.nav-btn,button{border:none;cursor:pointer;border-radius:16px;padding:12px 10px;transition:.22s ease}
+.nav-btn{color:var(--text);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);backdrop-filter:blur(14px)}
+.nav-btn.active{background:linear-gradient(135deg, rgba(34,211,238,.95), rgba(139,92,246,.92));color:#04111d;font-weight:800}
+.page{display:none;animation:fadeUp .28s ease}.page.active{display:block}
+.card{padding:18px;margin-bottom:14px;position:relative;overflow:hidden}
+.hero-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.orb{width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 30% 30%, #67e8f9, #8b5cf6 65%, #0f172a);box-shadow:0 0 30px rgba(34,211,238,.35);animation:float 3s ease-in-out infinite}
+.hero p,.card p{color:var(--muted);line-height:1.6;margin-top:6px}
+label{display:block;margin:14px 0 8px;color:#e2e8f0;font-size:13px;font-weight:600}
+input{width:100%;padding:15px 16px;border-radius:16px;border:1px solid rgba(255,255,255,.12);outline:none;background:rgba(15,23,42,.55);color:var(--text);margin-bottom:12px}
+input:focus{border-color:rgba(34,211,238,.55);box-shadow:0 0 0 4px rgba(34,211,238,.12)}
+.primary{width:100%;background:linear-gradient(135deg, #22d3ee, #8b5cf6);color:#fff;font-weight:800}
+.secondary{width:100%;margin-top:10px;background:rgba(255,255,255,.08);color:var(--text);font-weight:700;border:1px solid rgba(255,255,255,.10)}
+.danger-btn{width:100%;margin-top:10px;background:linear-gradient(135deg, #fb7185, #ef4444);color:white;font-weight:800}
+.list{margin-top:12px;padding-left:18px;color:#e2e8f0}.list li{margin:8px 0}
+.feature-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.feature{padding:14px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);text-align:center}
+.score-wrap{display:flex;gap:16px;align-items:center;margin-top:14px}
+.circle{width:116px;height:116px;border-radius:50%;display:grid;place-items:center;font-size:28px;font-weight:800;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.20), rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.12)}
+.safe{color:var(--good)} .warn{color:var(--warn)} .danger{color:var(--danger)}
+.status{font-size:22px;font-weight:800;margin-bottom:8px}
+.route{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;border-radius:16px;margin-top:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
+.safe-route{border-color:rgba(74,222,128,.30)} .danger-route{border-color:rgba(248,113,113,.30)}
+.map-box{height:200px;margin:14px 0;border-radius:20px;background:linear-gradient(135deg, #0ea5e9, #1d4ed8 55%, #111827);position:relative;overflow:hidden;display:grid;place-items:center;text-align:center;padding:14px;border:1px solid rgba(255,255,255,.12)}
+.map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.12) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.12) 1px, transparent 1px);background-size:28px 28px;opacity:.18}
+.pin{width:18px;height:18px;background:#fb7185;border-radius:50%;box-shadow:0 0 0 10px rgba(251,113,133,.25);position:absolute;top:45%;left:52%;animation:pulse 1.8s infinite;z-index:1}
+.sos-card{text-align:center;background:linear-gradient(180deg, rgba(239,68,68,.14), rgba(255,255,255,.06));border:1px solid rgba(239,68,68,.22)}
+#mapLink{word-break:break-word} a{color:#67e8f9;text-decoration:none}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(251,113,133,.35)}70%{transform:scale(1.08);box-shadow:0 0 0 14px rgba(251,113,133,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(251,113,133,0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@media (max-width:420px){.nav{grid-template-columns:repeat(2,1fr)}.score-wrap{flex-direction:column;text-align:center}.header{flex-direction:column;align-items:flex-start}.feature-grid{grid-template-columns:repeat(2,1fr)}}

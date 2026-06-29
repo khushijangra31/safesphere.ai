@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SafeSphere AI</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-glow glow1"></div>
+  <div class="bg-glow glow2"></div>
+
+  <div class="app">
+    <header class="header glass">
+      <div>
+        <h1>SafeSphere AI</h1>
+        <p>Route safety, live location, contacts, SOS, fake call.</p>
+      </div>
+      <span class="badge">Premium Demo</span>
+    </header>
+
+    <nav class="nav glass">
+      <button class="nav-btn active" onclick="showPage('home', this)">Home</button>
+      <button class="nav-btn" onclick="showPage('score', this)">Safety Score</button>
+      <button class="nav-btn" onclick="showPage('map', this)">Live Map</button>
+      <button class="nav-btn" onclick="showPage('sos', this)">SOS</button>
+    </nav>
+
+    <section id="home" class="page active">
+      <div class="card hero glass">
+        <div class="hero-top">
+          <div>
+            <h2>Travel safer with one smart app</h2>
+            <p>Check route safety, share live location, save trusted contacts, and trigger SOS or fake call instantly.</p>
+          </div>
+          <div class="orb"></div>
+        </div>
+        <label>Destination</label>
+        <input id="destination" type="text" placeholder="e.g. College, hostel, market" />
+        <button class="primary" onclick="generateScore()">Check Safety</button>
+      </div>
+
+      <div class="card glass">
+        <h3>Trusted Contacts</h3>
+        <input id="contactName" type="text" placeholder="Contact name" />
+        <input id="contactInfo" type="text" placeholder="Phone or email" />
+        <button class="secondary" onclick="addContact()">Save Contact</button>
+        <ul id="contactList" class="list"></ul>
+      </div>
+
+      <div class="card glass feature-grid">
+        <div class="feature"><span>🛡️</span><p>Safety score</p></div>
+        <div class="feature"><span>📍</span><p>Live location</p></div>
+        <div class="feature"><span>🚨</span><p>Emergency SOS</p></div>
+        <div class="feature"><span>📞</span><p>Fake call</p></div>
+      </div>
+    </section>
+
+    <section id="score" class="page">
+      <div class="card glass">
+        <h2>Safety Score</h2>
+        <div class="score-wrap">
+          <div id="scoreCircle" class="circle safe">82%</div>
+          <div>
+            <p id="status" class="status safe">Safe</p>
+            <p id="advice">Enter a destination to generate a result.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card glass">
+        <h3>Route options</h3>
+        <div class="route safe-route"><span>Route A - Main road</span><strong>Best</strong></div>
+        <div class="route"><span>Route B - Mixed traffic</span><strong>Medium</strong></div>
+        <div class="route danger-route"><span>Route C - Isolated lane</span><strong>Risky</strong></div>
+      </div>
+      <div class="card glass">
+        <h3>AI Suggestion</h3>
+        <p>Pick the safest route, keep live tracking on, and avoid isolated lanes at night.</p>
+      </div>
+    </section>
+
+    <section id="map" class="page">
+      <div class="card glass">
+        <h2>Live Map</h2>
+        <p>Your location can be shared with trusted contacts instantly.</p>
+        <div class="map-box">
+          <div class="map-grid"></div>
+          <div class="pin"></div>
+          <p id="locationText">Location not fetched yet</p>
+        </div>
+        <button class="primary" onclick="shareLocation()">Share Live Location</button>
+      </div>
+      <div class="card glass">
+        <h3>Location Link</h3>
+        <p id="mapLink">No link generated yet.</p>
+      </div>
+      <div class="card glass">
+        <h3>Nearby Help</h3>
+        <ul class="list">
+          <li>Police station</li>
+          <li>Hospital</li>
+          <li>Trusted contact</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="sos" class="page">
+      <div class="card glass sos-card">
+        <h2>Emergency SOS</h2>
+        <p>Trigger instant help and notify trusted contacts.</p>
+        <button class="danger-btn" onclick="startSOS()">Send SOS</button>
+        <button class="secondary" onclick="fakeCall()">Fake Call</button>
+      </div>
+      <div class="card glass">
+        <h3>Emergency Countdown</h3>
+        <p id="countdownText">Ready to activate.</p>
+      </div>
+      <div class="card glass" id="sosResult">
+        <h3>Status</h3>
+        <p>Press SOS to simulate an emergency alert.</p>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
